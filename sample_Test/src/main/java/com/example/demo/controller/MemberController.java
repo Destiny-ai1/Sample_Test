@@ -17,7 +17,7 @@ import com.example.demo.service.*;
 
 
 
-//@Controller
+@Controller
 public class MemberController {
 	@Autowired
 	private MemberService memberService;
@@ -33,13 +33,15 @@ public class MemberController {
 		return new ModelAndView("index");
 	}
 	
+	@GetMapping("/member/login")
+	public ModelAndView login() {
+		return new ModelAndView("member/login");
+	}
+	
 	@PostMapping("/member/join")
 	public ModelAndView join(@ModelAttribute MemberDto.Create dto) {
-		boolean result = memberService.join(dto);
-		if(result==false) {
-			return new ModelAndView("redirect:/");
-		}
-		return new ModelAndView("redirect:/member/login");
+		 memberService.join(dto);
+		 return new ModelAndView("redirect:/member/login");
 	}
 	
 	/* Java.io는 한번에 하나씩 실행한다.
@@ -61,4 +63,5 @@ public class MemberController {
 		}
 		return ResponseEntity.status(409).body(null);
 	}
+
 }

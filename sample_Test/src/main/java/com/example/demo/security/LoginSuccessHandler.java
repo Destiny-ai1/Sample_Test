@@ -11,11 +11,13 @@ import com.example.demo.dao.*;
 
 import jakarta.servlet.*;
 import jakarta.servlet.http.*;
+import jakarta.transaction.*;
 
-//@Component
+@Component
 public class LoginSuccessHandler implements AuthenticationSuccessHandler {
 	@Autowired
-	private MemberDaoMyBatis memberDao;
+	private MemberDao memberDao;
+	@Transactional
 	@Override
 	public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
 			Authentication authentication) throws IOException, ServletException {

@@ -22,7 +22,7 @@ public class MailUtilTest {
 		util.sendMail("we8537@naver.com","테스트", "제대로 왔냐 ? ");
 	}
 	// 가짜 가입확인메일 테스트
-	@org.junit.jupiter.api.Test
+//	@org.junit.jupiter.api.Test
 	public void failMailTest() {
 		String link = "<a href='http://localhost:8083/member/join-check?checkcode=1234'>가입확인</a>";
 		util.sendMail("we8537@naver.com","테스트",link);

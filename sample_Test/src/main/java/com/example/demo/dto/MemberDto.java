@@ -31,7 +31,7 @@ public class MemberDto {
 		private LocalDate birthday;
 		private MultipartFile profile;
 
-		public Member entity(String profileName, String encodedpassword) {
+		public Member toEntity(String profileName, String encodedpassword) {
 			return new Member(username,encodedpassword,email,LocalDate.now(),birthday,profileName,0,true,Role.user);
 		}
 		
@@ -52,8 +52,8 @@ public class MemberDto {
 	@Data
 	public static class Read{
 		private String email;
-		private String joinday;
-		private String birthday;
+		private LocalDate joinday;
+		private LocalDate birthday;
 		private String profile;
 		private long days;
 		private String role;

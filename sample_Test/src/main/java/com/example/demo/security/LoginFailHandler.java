@@ -13,31 +13,34 @@ import com.example.demo.entity.*;
 
 import jakarta.servlet.*;
 import jakarta.servlet.http.*;
+import jakarta.transaction.*;
 
-//@Component
+@Component
 public class LoginFailHandler implements AuthenticationFailureHandler{
 	@Autowired
-	private MemberDaoMyBatis memberDao;
+	private MemberDao memberDao;
 	
+	@Transactional
 	@Override
 	public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response,
 			AuthenticationException exception) throws IOException, ServletException {
 		String username = request.getParameter("username");
-		Optional<Member> result= memberDao.findByUsername(username);
+		Optional<Member> result= memberDao.findById(username);
 		HttpSession session = request.getSession();
+		
 		if(result.isEmpty()) { // 아이디가 틀린경우
 			session.setAttribute("message","ID를 다시한번 확인하세요.");
 		}
 		else { // 비밀번호가 틀린경우
 			Member member = result.get();
-			if(member.isEnabled()==false) {
+			if(member.getEnabled()==false) {
 				session.setAttribute("message","계정이 블록 되었습니다. 관리자에게 문의 해주세요");
 			}else if(member.getLoginFailCount()==4) {
-				memberDao.block(username);
+				member.block();
 				session.setAttribute("message","로그인에 5회 실패하면 계정이 블록됩니다. 관리자에게 문의 해주세요");
 			} else {
-				memberDao.increaseLoginFailCount(username);
-				session.setAttribute("message","로그인에"+(member.getLoginFailCount()+1)+"회 실패하셧습니다.");
+				member.increaseLoginFailCount();
+				session.setAttribute("message","로그인에"+ member.getLoginFailCount()+"회 실패하셧습니다.");
 			}
 		}
 		response.sendRedirect("/member/login");

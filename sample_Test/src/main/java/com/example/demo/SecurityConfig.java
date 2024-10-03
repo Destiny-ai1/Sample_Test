@@ -9,9 +9,9 @@ import org.springframework.security.web.*;
 
 import com.example.demo.security.*;
 
-//@Configuration
-//@EnableWebSecurity
-//@EnableMethodSecurity(prePostEnabled = true, securedEnabled = true)
+@Configuration
+@EnableWebSecurity
+@EnableMethodSecurity(prePostEnabled = true, securedEnabled = true)
 public class SecurityConfig {
 	@Autowired
 	private LoginSuccessHandler successHandler;
@@ -20,7 +20,7 @@ public class SecurityConfig {
 	
 	@Bean
 	SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-		http.csrf(c->c.disable());
+//		http.csrf(c->c.disable());
 		http.formLogin(c->c.loginPage("/member/login").loginProcessingUrl("/member/login")
 				.successHandler(successHandler).failureHandler(failHandler));
 		http.logout(c->c.logoutUrl("/member/logout").logoutSuccessUrl("/"));

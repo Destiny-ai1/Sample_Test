@@ -6,7 +6,6 @@
 <link href="/style/main.css" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
-<script src="/script/inputFunction.js"></script>
 <title>Insert title here</title>
 </head>
 <body>
@@ -16,6 +15,12 @@
 		<main>
 			<aside th:replace="~{/fragment/aside.html}"></aside>
 			<section>
+				<form action="/member/login" method="post">
+				<inPut type="hidden" name="_csrf" th:if="${_csrf !=null}" th:value="${_csrf.token}">
+				<inPut type="text" name="username" placeholder="아이디 입력">
+				<inPut type="password" name="password" placeholder="비밀번호 입력">		
+				<button>로그인</button>
+				</form>		
 			</section>
 			<aside th:replace="~{/fragment/aside.html}"></aside>
 		</main>

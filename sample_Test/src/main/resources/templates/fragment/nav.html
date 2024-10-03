@@ -3,30 +3,6 @@
 <head>
 <meta charset="UTF-8">
 <title>Insert title here</title>
-<script>
-	$(document).ready(function() {
-		$("#logout").click(function() {
-			const token = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
-			const html = `
-				<form action="/member/logout" method="post">
-					<input type='hidden' name='_csrf' value='${token}'>
-				</form>
-			`;
-			$(html).appendTo($('body')).submit();
-		});
-	});
-	
-	$(document).ready(function() {
-		$("#withdraw").click(function() {
-			const token = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
-			const html = `
-				<form action="/member/withdraw" method="post">
-				</form>
-			`;
-			$(html).appendTo($('body')).submit();
-		});
-	});
-</script>
 </head>
 <body>
 	<nav class="navbar navbar-expand-sm navbar-dark bg-dark">
@@ -48,5 +24,16 @@
 			</div>
 		</div>
 	</nav>
+	<script>
+		$('#logout').click(function(){
+			const token= '[[${_csrf.token}]]';
+			const html=`
+			  <form action="/member/logout" method="post">
+				<input type='hidden' name='_csrf' value='${token}'>
+			  </form>
+			  `;
+			$(html).appendTo($('body')).submit();
+		});
+	</script>
 </body>
 </html>

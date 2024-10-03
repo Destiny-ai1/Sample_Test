@@ -14,7 +14,7 @@ import com.example.demo.dao.*;
 import com.example.demo.dto.MemberDto.*;
 import com.example.demo.entity.*;
 
-
+import jakarta.transaction.*;
 
 
 @Service
@@ -22,9 +22,11 @@ public class MemberService {
 	@Autowired
 	private PasswordEncoder encoder;
 	@Autowired
-	private MemberDaoBatisWithXml memberDao;
-	private final String imageSaveFolder = "c:/upload";
-	private final String defaultImage = "default.jpg";
+	private MemberDao memberDao;
+	@Value("${sample.board.image.folder}")
+	private String imageSaveFolder;
+	@Value("${sample.board.image.default}")
+	private String defaultImage;
 	
 	/*프사를 업로드한 경우 이미지 이름을 아이디로 변경후 저장
 	  프사를 올리지 않는경우 default.png로 저장
@@ -43,7 +45,7 @@ public class MemberService {
 		}
 		String 프로필이름 = dto.getUsername()+"."+ 확장자;
 	
-		Member member =dto.entity(프로필이름,encodedpassword);
+		Member member =dto.toEntity(프로필이름,encodedpassword);
 		try {
 			memberDao.save(member);
 			File target = new File(imageSaveFolder, 프로필이름);
@@ -58,44 +60,38 @@ public class MemberService {
 		}
 	}
 	
-	public boolean ID사용가능(String username) {
-		return memberDao.countByUsername(username)==0;
+	public boolean Id사용가능(String username) {
+		return !memberDao.existsById(username);
 	}
-	public Optional<String> ID찾기(String email){
+	public Optional<String> Id찾기(String email){
 		return memberDao.findByUsernameByemail(email);
 	}
 	// 비밀번호 찾기위해 임시비밀번호를 발급
+	@Transactional
 	public boolean password_Reset(String username, String email) {
-		Optional<Member> result= memberDao.findByUsername(username);
+		Optional<Member> result= memberDao.findById(username);
 		if(result.isEmpty())
 			return false;
 		String newpassword = RandomStringUtils.randomAlphabetic(20);
 		String newEncodedPassword= encoder.encode(newpassword);
-		Member params = Member.builder().username(username).password(newEncodedPassword).build();
-		return memberDao.update(params)==1;
+		Member member = result.get();
+		member.changePassword(newEncodedPassword);
+		return true;
 	}
+	
 	// 내정보를 비밀번호를 입력하고 확인
 	public boolean password_check(String password, String username) {
-		String encodedPassword= memberDao.findByUsername(username).get().getPassword();
+		String encodedPassword= memberDao.findById(username).get().getPassword();
 		return encoder.matches(password, encodedPassword);
 	}
 	
 	public Member 내정보보기(String username) {
-		return memberDao.findByUsername(username).get();
+		return memberDao.findById(username).get();
 	}
 	
-	public boolean 내정보변경(String oldPassword, String newPassword, String username, String email) {
-		Member member = memberDao.findByUsername(username).get();
-		boolean passwordCheck = encoder.matches(oldPassword, member.getPassword());
-		if(passwordCheck==false)
-			return false;
-		String newEncodedPassword = encoder.encode(newPassword);
-		Member params = Member.builder().username(username).password(newEncodedPassword).email(email).build();
-		return memberDao.update(params)==1;
-	}
 	
 	public void 탈퇴(String username) {
-		memberDao.deleteByUsername(username);
+		memberDao.deleteById(username);
 	}
 }
 
