@@ -2,6 +2,7 @@ package com.example.demo.dao;
 
 import java.util.*;
 
+import org.apache.ibatis.annotations.*;
 import org.springframework.data.jpa.repository.*;
 
 import com.example.demo.entity.*;
@@ -19,4 +20,7 @@ public interface MemberDao extends JpaRepository<Member,String>{
 	@Modifying
 	@Query("update Member m set m.loginFailCount=0 where m.username=:username")
 	public void resetLoginfailCount(String username);
+	
+	@Delete("delete from member where username=#{username}")
+	public void deleteById(String username);
 }

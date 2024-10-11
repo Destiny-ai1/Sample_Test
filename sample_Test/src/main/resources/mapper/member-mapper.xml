@@ -23,7 +23,7 @@ Doctype 을 설정 ( 한글자라도 오타없이 정확하게 기술할것)  --
 		values(#{username},#{password},#{email},#{joinday},#{birthday},#{profile},#{login_count_fail},#{enable},#{role})
 	</insert>
 	
-	<delete id ="deleteByUsername">
+	<delete id ="deleteById">
 		delete from member where username=#{username} and rownum=1
 	</delete>
 	

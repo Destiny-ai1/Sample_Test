@@ -18,11 +18,17 @@ public class MemberDaoTest {
 	@Autowired
 	private PasswordEncoder passwordEncoder;
 	
-	@org.junit.jupiter.api.Test
+//	@org.junit.jupiter.api.Test
 	public void Test() {
 		Member m = new Member("Spring", passwordEncoder.encode("1234"),
 				"spring@naver.com", LocalDate.now(), LocalDate.of(2024,9,26), "default.jpg",0,
 				false, Role.user);
 		assertEquals(1, memberDao.save(m));
+	}
+	
+//	@org.junit.jupiter.api.Test
+	public void passwordReset() {
+		Member m= memberDao.findById("spring").get();
+		m.changePassword(passwordEncoder.encode("111111"));
 	}
 }

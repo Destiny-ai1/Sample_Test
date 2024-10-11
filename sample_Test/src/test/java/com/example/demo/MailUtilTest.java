@@ -17,7 +17,7 @@ public class MailUtilTest {
 		assertNotNull(util);
 	}
 	
-//	@org.junit.jupiter.api.Test
+	@org.junit.jupiter.api.Test
 	public void sendMailTest() {
 		util.sendMail("we8537@naver.com","테스트", "제대로 왔냐 ? ");
 	}

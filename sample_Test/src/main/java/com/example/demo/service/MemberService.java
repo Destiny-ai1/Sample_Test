@@ -1,6 +1,7 @@
 package com.example.demo.service;
 
 import java.io.*;
+import java.time.*;
 import java.util.*;
 
 import org.apache.commons.io.*;
@@ -11,8 +12,11 @@ import org.springframework.stereotype.*;
 import org.springframework.util.*;
 import org.springframework.web.multipart.*;
 import com.example.demo.dao.*;
+import com.example.demo.dto.*;
 import com.example.demo.dto.MemberDto.*;
 import com.example.demo.entity.*;
+import com.example.demo.enums.*;
+import com.example.demo.util.*;
 
 import jakarta.transaction.*;
 
@@ -27,6 +31,11 @@ public class MemberService {
 	private String imageSaveFolder;
 	@Value("${sample.board.image.default}")
 	private String defaultImage;
+	@Autowired
+	private MailUtil mailUtil;
+	
+	@Value("${sample.board.profile.url}")
+	private String url;
 	
 	/*프사를 업로드한 경우 이미지 이름을 아이디로 변경후 저장
 	  프사를 올리지 않는경우 default.png로 저장
@@ -36,7 +45,7 @@ public class MemberService {
 	public void join(Create dto) {
 		String encodedpassword = encoder.encode(dto.getPassword());
 	
-		String 확장자 = "JPG";
+		String 확장자 = "jfif";
 		MultipartFile profile = dto.getProfile();
 	
 		boolean is프사업로드 = profile!=null && profile.isEmpty()==false;
@@ -68,7 +77,7 @@ public class MemberService {
 	}
 	// 비밀번호 찾기위해 임시비밀번호를 발급
 	@Transactional
-	public boolean password_Reset(String username, String email) {
+	public boolean password_Reset(String username) {
 		Optional<Member> result= memberDao.findById(username);
 		if(result.isEmpty())
 			return false;
@@ -76,6 +85,7 @@ public class MemberService {
 		String newEncodedPassword= encoder.encode(newpassword);
 		Member member = result.get();
 		member.changePassword(newEncodedPassword);
+		mailUtil.sendMail(member.getEmail(), "임시비밀번호 를 입력해주세요","임시비밀번호 :"+newpassword);
 		return true;
 	}
 	
@@ -85,13 +95,48 @@ public class MemberService {
 		return encoder.matches(password, encodedPassword);
 	}
 	
-	public Member 내정보보기(String username) {
-		return memberDao.findById(username).get();
+	public MemberDto.Read 내정보보기(String username) {
+		Member member= memberDao.findById(username).get();
+			return member.toReadDto(url);
 	}
 	
 	
 	public void 탈퇴(String username) {
-		memberDao.deleteById(username);
+		Member member=memberDao.findById(username).get();
+		File file = new File(imageSaveFolder,member.getProfile());
+		if(file.exists())
+			file.delete();
+		memberDao.delete(member);
+	}
+
+	@Transactional
+	   public PasswordChangeResult updatePassword(MemberDto.UpdatePassword dto, String loginId) {
+	      if(dto.getOldPassword().equals(dto.getNewPassword())==true)
+	         return PasswordChangeResult.SAME_AS_OLD_PASSWORD;
+	      Member member = memberDao.findById(loginId).get();
+	   
+	      boolean result = encoder.matches(dto.getOldPassword(), member.getPassword());
+	      if(result==false)
+	         return PasswordChangeResult.PASSWORD_CHECK_FAIL;
+	      
+	      String newEncodedPassword = encoder.encode(dto.getNewPassword());
+	      member.changePassword(newEncodedPassword);
+	      return PasswordChangeResult.SUCCESS;
+	      
+	   }
+	@Transactional
+	public void update(MemberDto.Update dto, String username) {
+		String bithdayString = dto.getBirthday();
+		String[] date = bithdayString.split("-");
+		
+		int year = Integer.parseInt(date[0]);
+		int momth = Integer.parseInt(date[1]);
+		int day = Integer.parseInt(date[2]);
+		
+		
+		LocalDate birthday = LocalDate.of(year, momth, day);
+		Member member = memberDao.findById(username).get();
+		member.update(dto.getEmail(),birthday);
 	}
 }
 

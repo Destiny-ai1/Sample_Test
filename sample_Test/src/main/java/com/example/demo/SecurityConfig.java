@@ -17,6 +17,8 @@ public class SecurityConfig {
 	private LoginSuccessHandler successHandler;
 	@Autowired
 	private LoginFailHandler failHandler;
+	@Autowired
+	private MyEntryPoint myEntryPoint;
 	
 	@Bean
 	SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -24,6 +26,7 @@ public class SecurityConfig {
 		http.formLogin(c->c.loginPage("/member/login").loginProcessingUrl("/member/login")
 				.successHandler(successHandler).failureHandler(failHandler));
 		http.logout(c->c.logoutUrl("/member/logout").logoutSuccessUrl("/"));
+		http.exceptionHandling(c->c.authenticationEntryPoint(myEntryPoint));
 		return http.build();
 	}
 }
