@@ -27,6 +27,7 @@ public class MemberService {
 	private PasswordEncoder encoder;
 	@Autowired
 	private MemberDao memberDao;
+	
 	@Value("${sample.board.image.folder}")
 	private String imageSaveFolder;
 	@Value("${sample.board.image.default}")
@@ -125,18 +126,39 @@ public class MemberService {
 	      
 	   }
 	@Transactional
-	public void update(MemberDto.Update dto, String username) {
-		String bithdayString = dto.getBirthday();
-		String[] date = bithdayString.split("-");
+	public void update(MemberDto.Update dto, String loginId) {
+		Member member = memberDao.findById(loginId).get();
 		
-		int year = Integer.parseInt(date[0]);
-		int momth = Integer.parseInt(date[1]);
-		int day = Integer.parseInt(date[2]);
-		
-		
-		LocalDate birthday = LocalDate.of(year, momth, day);
-		Member member = memberDao.findById(username).get();
-		member.update(dto.getEmail(),birthday);
+		// 서버에서 프사를 변경하면 dto.getProfile()에 MultipartFile이 들어있고, 프사를 변경하지 않으면 비어있다
+		// 프론트에 <input type='file' name='profile'>이 존재할 경우 MultipartFile profile이 절대 null이 되지 않는다
+		if(dto.getProfile().isEmpty()==false) {
+			// 새프사를 저장할 이름(사용자 아이디 + 확장자)을 계산
+			MultipartFile newProfile = dto.getProfile();
+			String 확장자 =  FilenameUtils.getExtension(newProfile.getOriginalFilename());
+			String 새프로필이름 = loginId + "." + 확장자;
+			
+			// 기존 프사와 새 프사는 파일의 이름은 사용자 아이디와 같다. 확장자는 다를 수 있다
+			// 기존 프사와 새 프사의 확장자가 다르다면 기존 프사를 삭제한다
+			boolean 기존프사삭제여부 = (member.getProfile().equals(새프로필이름)==false);
+			
+			try {
+				// 폴더명과 파일명으로 File 객체를 생성 -> 파일이 없으면 새로 만들고 있으면 덮어 쓴다
+				File file = new File(imageSaveFolder, 새프로필이름);
+				newProfile.transferTo(file);
+				if(기존프사삭제여부==true) {
+					File deleteProfile = new File(imageSaveFolder, member.getProfile());
+					if(deleteProfile.exists())
+						deleteProfile.delete();
+				}
+			} catch (IllegalStateException | IOException e) {
+				e.printStackTrace();
+			}
+			// 프사를 변경한 경우
+			member.update(dto.getEmail(), dto.getBirthday(), 새프로필이름);
+		} else {
+			// 프사를 변경하지 않은 경우
+			member.update(dto.getEmail(), dto.getBirthday(), null);
+		}
 	}
 }
 

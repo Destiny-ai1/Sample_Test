@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
@@ -10,75 +11,53 @@
 <title>Insert title here</title>
 </head>
 <body>
-   <div id="app">
-      <header th:replace="~{/fragment/header.html}"> </header>
-      <nav th:replace="~{/fragment/nav.html}"></nav>
-      <main>
-         <aside th:replace="~{/fragment/aside.html}"></aside>
-         <section>
-            <table class="table">
-               <tr>
-                  <td colspan="2">
-                     <img th:src="${result.profile}" style="height:200px;">
-                  </td>
-               </tr>
-               <tr>
-                  <td>이메일</td>
-                  <td>
-                  	<input type='text' th:value="${result.email}" id="email">
-                  </td>
-               </tr>
-               <tr>
-                  <td>비밀번호</td><td><a type="button" class="btn btn-primary" href="/member/update-password">비밀번호 변경</a></td>
-               </tr>
-               <tr>
-                  <td>가입정보</td><td th:text="${result.joinday} + ' (' + ${result.days} + '일)'"></td>
-               </tr>
-               <tr>
-                  <td>생일</td>
-                  <td> 
-                  <input type='date' th:value="${result.birthday}" id="birthday">
-                  </td>
-               </tr>
-            </table>
-            <button id="update" class="btn btn-primary">변경</button>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
-            <button id="delete" class="btn btn-danger">탈퇴</button>
-         </section>
-         <aside th:replace="~{/fragment/aside.html}"></aside>
-      </main>
-      <footer th:replace="~{/fragment/footer.html}"> </footer>
-   </div>
-   <script>
-   $('#update').click(function(){
-	   const choice = confirm("변경하시겠습니까?");
-	   if(choice==false)
-		   return;
-	   const _csrf = '[[${_csrf.token}]]';
-	   const email = $('#email').val();
-	   const birthday = $('#birthday').val();
-	   const html=`
-	   <form action="/member/update" method="post">
-	     <input type ="hidden" value="${email}" name="email">
-	     <input type ="hidden" value="${birthday}" name="birthday">
-	     <input type ="hidden" value="${_csrf}" name="_csrf">
-	   </form>
-	   `;
-	   $(html).appendTo($('body')).submit();
-   });
-   </script>
-   <script>
-   $('#delete').click(function(){
-	   const choice = confirm("탈퇴하겠습니까?");
-	   if(choice==false)
-		   return;
-	   const _csrf = '[[${_csrf.token}]]';
-	   const html=`
-	   <form action="/member/delete" method="post">
-	     <input type ="hidden" value="${_csrf}" name="_csrf">
-	   </form>
-	   `;
-	   $(html).appendTo($('body')).submit();
-   });
-   </script>         
+	<div id="app">
+		<header th:replace="~{/fragment/header.html}"> </header>
+		<nav th:replace="~{/fragment/nav.html}"></nav>
+		<main>
+			<aside th:replace="~{/fragment/aside.html}"></aside>
+			<section>
+				<form action="/member/update" method="post" enctype="multipart/form-data">
+				<input type="hidden" name="_csrf" th:value="${_csrf.token}">
+				<table class="table">
+					<tr>
+						<td colspan="2">
+							<img th:src="${result.profile}" style="height:200px;" id="show-profile">
+							<input type="file" id="profile" name="profile">
+						</td>
+					</tr>
+					<tr>
+						<td>이메일</td>
+						<td>
+							<input type='text' th:value="${result.email}" id="email" name="email">
+						</td>
+					</tr>
+					<tr>
+						<td>비밀번호</td><td><a type="button" class="btn btn-primary" href="/member/update-password">비밀번호 변경</a></td>
+					</tr>
+					<tr>
+						<td>가입정보</td><td th:text="${result.joinday} + ' (' + ${result.days} + '일)'"></td>
+					</tr>
+					<tr>
+						<td>생일</td>
+						<td>
+							<input type="date" th:value="${result.birthday}" id="birthday" name="birthday">
+						</td>
+					</tr>
+				</table>
+				<button id="update" class="btn btn-success">변경</button>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+				</form>
+			</section>
+			<aside th:replace="~{/fragment/aside.html}"></aside>
+		</main>
+		<footer th:replace="~{/fragment/footer.html}"> </footer>
+	</div>		
+	<script>
+		$('#profile').change(loadProfile);
+	</script>
 </body>
 </html>
+
+
+
+

@@ -23,6 +23,8 @@ public class SecurityConfig {
 	@Bean
 	SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 //		http.csrf(c->c.disable());
+		
+		http.csrf(c->c.ignoringRequestMatchers("/api/boards/image"));
 		http.formLogin(c->c.loginPage("/member/login").loginProcessingUrl("/member/login")
 				.successHandler(successHandler).failureHandler(failHandler));
 		http.logout(c->c.logoutUrl("/member/logout").logoutSuccessUrl("/"));

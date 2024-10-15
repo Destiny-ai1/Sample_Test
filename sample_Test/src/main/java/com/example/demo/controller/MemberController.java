@@ -7,7 +7,6 @@ import java.security.*;
 
 import org.springframework.beans.factory.annotation.*;
 import org.springframework.http.*;
-import org.springframework.security.access.method.*;
 import org.springframework.security.access.prepost.*;
 import org.springframework.stereotype.*;
 import org.springframework.validation.*;
@@ -124,7 +123,7 @@ public class MemberController {
 	
 	@PreAuthorize("isAuthenticated()")
 	@GetMapping("/member/readme")
-	public ModelAndView readme(HttpSession session, Principal principal){
+	public ModelAndView readme2(HttpSession session, Principal principal){
 		if(session.getAttribute("checkPassword")==null)
 			return new ModelAndView("redirect:/member/check-password");
 		MemberDto.Read dto = memberService.내정보보기(principal.getName());
@@ -170,7 +169,7 @@ public class MemberController {
 	@PostMapping("/member/update")
 	public ModelAndView update(@Valid MemberDto.Update dto, BindingResult br, Principal principal) {
 		memberService.update(dto, principal.getName());
-		return new ModelAndView("redirect:/");
+		return new ModelAndView("redirect:/member/readme");
 	}
 	
 	@ExceptionHandler(ConstraintViolationException.class)
