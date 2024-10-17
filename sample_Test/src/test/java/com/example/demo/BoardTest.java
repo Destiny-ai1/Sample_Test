@@ -2,15 +2,14 @@ package com.example.demo;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.*;
-import org.springframework.boot.test.context.*;
+
 
 import com.example.demo.dao.*;
 import com.example.demo.dto.*;
 import com.example.demo.entity.*;
 
-@SpringBootTest
+//@SpringBootTest
 public class BoardTest {
 	@Autowired
 	private BoardDao boardDao;

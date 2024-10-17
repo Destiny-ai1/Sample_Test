@@ -17,9 +17,13 @@ public class board {
 	private LocalDateTime writeTime;
 	private Integer readCnt;
 	private Integer goodCnt;
-	private Integer babCnt;
+	private Integer badCnt;
 	
 	
 	private boolean isDeleted;
-	
+		
+	public board 글삭제() {
+		this.content = "삭제된글입니다";
+		return this;
+	}
 }

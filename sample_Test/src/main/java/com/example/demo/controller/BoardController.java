@@ -10,6 +10,8 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.*;
 
 import com.example.demo.dto.*;
+import com.example.demo.entity.*;
+import com.example.demo.exception.*;
 import com.example.demo.service.*;
 
 import jakarta.validation.*;
@@ -29,7 +31,24 @@ public class BoardController {
 	@PreAuthorize("isAuthenticated")
 	@PostMapping("/board/write")
 	public ModelAndView ckEditor작성(@Valid BoardDto.Create dto, BindingResult br, Principal principal) {
-		boardservice.write(dto,principal.getName());
-		return null;
+		Long bno=boardservice.write(dto,principal.getName());
+		return new ModelAndView("redirect:/board/read?bno="+bno);
+	}
+	
+	@GetMapping("/board/read")
+	public ModelAndView read(Long bno, Principal principal) {
+		String loginId= principal==null? null:principal.getName();
+		board board= boardservice.read(bno, loginId);
+		return new ModelAndView("board/read").addObject("result",board);
+	}
+	
+	@GetMapping("/board/list")
+	public ModelAndView list() {
+		return new ModelAndView("board/list").addObject("result",boardservice.findall());
+	}
+	
+	@ExceptionHandler(FailException.class)
+	public ModelAndView failExceptionHandler(FailException e) {
+		return new ModelAndView("error/error").addObject("message",e.getMessage());
 	}
 }

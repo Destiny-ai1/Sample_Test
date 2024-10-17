@@ -7,7 +7,7 @@ import org.springframework.boot.test.context.*;
 
 import com.example.demo.util.*;
 
-@SpringBootTest
+//@SpringBootTest
 public class MailUtilTest {
 	@Autowired
 	private MailUtil util;

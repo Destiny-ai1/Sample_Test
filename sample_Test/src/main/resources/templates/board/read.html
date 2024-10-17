@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+<meta charset="UTF-8">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="/style/main.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+<script src="/script/input.js"></script>
+<title>Insert title here</title>
+</head>
+<body>
+	<div id="app">
+		<header th:replace="~{/fragment/header.html}"> </header>
+		<nav th:replace="~{/fragment/nav.html}"></nav>
+		<main>
+			<aside th:replace="~{/fragment/aside.html}"></aside>
+			<section>
+				<div class="mb-4">
+                    <h2 th:text="${result.title}">제목:</h2> 
+                    <p><Strong>작성자:</Strong> <span th:text="${result.writer}"></span>
+                    <strong>조회수:</strong> <span th:text="${result.readCnt}"></span> 
+                    <strong>작성일:</strong> <span th:text="${result.writeTime}"></span></p>
+                </div>
+                <div class="mb-4">
+                    <h3>내용:</h3>
+                    <div th:utext="${result.content}"></div> 
+                </div>
+			
+				<div class="mb-4">
+                    <button class="btn btn-outline-primary" id="like-btn">좋아요 ♡ <span id="goodCnt" th:text="${result.goodCnt}">0</span></button>
+                    <button class="btn btn-outline-danger" id="dislike-btn">나빠요 👎 <span id="badCnt" th:text="${result.badCnt}">0</span></button>
+                </div>
+				
+				<div sec:authorize="isAuthenticated()"></div>
+				<textarea class="form-control" rows="5" placeholder="댓글을 달아주세요"></textarea>
+				<button class="btn btn-outline-success">댓글 작성</button>
+				
+				<div class="mb-4">
+					<button class="btn btn-info">변경하기</button>
+					<button class="btn btn-danger">삭제하기</button>
+				</div>
+			</section>
+			<aside th:replace="~{/fragment/aside.html}"></aside>
+		</main>
+		<footer th:replace="~{/fragment/footer.html}"> </footer>
+	</div>			
+</body>
+</html>

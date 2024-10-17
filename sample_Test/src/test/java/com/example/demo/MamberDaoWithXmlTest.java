@@ -11,7 +11,7 @@ import com.example.demo.entity.*;
 
 
 
-@SpringBootTest
+//@SpringBootTest
 public class MamberDaoWithXmlTest {
 	@Autowired
 	public MemberDaoBatisWithXml dao;

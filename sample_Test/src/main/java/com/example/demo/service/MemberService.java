@@ -125,6 +125,7 @@ public class MemberService {
 	      return PasswordChangeResult.SUCCESS;
 	      
 	   }
+	
 	@Transactional
 	public void update(MemberDto.Update dto, String loginId) {
 		Member member = memberDao.findById(loginId).get();
