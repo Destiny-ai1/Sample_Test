@@ -18,9 +18,15 @@
 			<section>
 				<div class="mb-4">
                     <h2 th:text="${result.title}">제목:</h2> 
-                    <p><Strong>작성자:</Strong> <span th:text="${result.writer}"></span>
-                    <strong>조회수:</strong> <span th:text="${result.readCnt}"></span> 
-                    <strong>작성일:</strong> <span th:text="${result.writeTime}"></span></p>
+                    <div class="d-flex justify-content-between">
+                        <p>
+                            <strong>작성자:</strong> <span th:text="${result.writer}"></span>
+                        </p>
+                        <p>
+                            <strong>조회수:</strong> <span th:text="${result.readCnt}"></span> 
+                            <strong>작성일:</strong> <span th:text="${result.writeTime}"></span>
+                        </p>
+                    </div>
                 </div>
                 <div class="mb-4">
                     <h3>내용:</h3>
@@ -36,9 +42,11 @@
 				<textarea class="form-control" rows="5" placeholder="댓글을 달아주세요"></textarea>
 				<button class="btn btn-outline-success">댓글 작성</button>
 				
-				<div class="mb-4">
-					<button class="btn btn-info">변경하기</button>
-					<button class="btn btn-danger">삭제하기</button>
+				<div class="d-flex justify-content-end mt-4" 
+							th:if="${result.writer == #authentication.name}">
+					
+					<a type="button" class="btn btn-info me-2" th:href="'/board/update?bno=' + ${result.bno}"> 변경하기</a>
+					<a type="button" class="btn btn-danger" th:href="'/board/delete?bno=' + ${result.bno}"> 삭제하기</a>
 				</div>
 			</section>
 			<aside th:replace="~{/fragment/aside.html}"></aside>

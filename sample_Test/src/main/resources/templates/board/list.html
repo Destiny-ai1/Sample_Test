@@ -27,7 +27,7 @@
 				  	</tr>
 				  </thead>
 				  <tbody>
-				  	<tr th:each="board:${result}">
+				  	<tr th:each="board:${result.boards}">
 				  		<td th:text="${board.bno}"></td>
 				  		<td>
 				  		  <a th:href="'/board/read?bno=' + ${board.bno}" th:text="${board.title}"></a>
@@ -38,6 +38,23 @@
 				  	</tr>
 				  </tbody>	
 				</table>
+				<ul class="pagination">
+				<!-- 뒤로가기 버튼 -->
+  					<li class="page-item" th:if="${result.prev>0}">
+        				<a class="page-link" th:href="'/?pageno=' + ${result.prev}">이전으로</a>
+    				</li>
+
+    			<!-- 페이지 번호 반복 -->
+    				<li class="page-item" th:each="i:${#numbers.sequence(result.start,result.end)}"
+    				 th:class="${i==result.pageno? 'page-item active':'page-item'}">
+        				<a class="page-link" th:href="'/?pageno='+ ${i}" th:text="${i}"></a>
+    				</li>
+
+    			<!-- 다음 버튼 -->
+    				<li class="page-item" th:if="${result.next>0}" >
+        				<a class="page-link" th:href="'/?pageno=' + ${result.next}">다음으로</a>
+    				</li>
+				</ul>
 			</section>
 			<aside th:replace="~{/fragment/aside.html}"></aside>
 		</main>

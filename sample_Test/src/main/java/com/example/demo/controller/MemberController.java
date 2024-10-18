@@ -36,11 +36,6 @@ public class MemberController {
 		return ResponseEntity.ok(checkcode);
 	}
 	
-	@GetMapping("/")
-	public ModelAndView index() {
-		return new ModelAndView("index");
-	}
-	
 	@PreAuthorize("isAnonymous()")
 	@GetMapping("/member/login")
 	public ModelAndView login() {

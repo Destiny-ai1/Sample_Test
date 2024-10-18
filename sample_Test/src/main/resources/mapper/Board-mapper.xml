@@ -12,4 +12,18 @@ Doctype 을 설정 ( 한글자라도 오타없이 정확하게 기술할것)  --
 	insert into board(bno, title, content, writer, write_time, read_cnt, good_cnt, bad_cnt, is_deleted)
 	values(#{bno},#{title},#{content},#{writer},sysdate,0,0,0,0)
 	</insert>
+	
+	<select id="findAll" resultType="com.example.demo.dto.BoardDto$BoardList">
+		<!-- [CDATA] = xml 파서에게 xml이 아니니 분석하지말라고 선언한다 -->
+		<![CDATA[
+		select * from
+    		(
+    			select  rownum as rnum,b.*from
+        			(select /*+ index_desc(board board_pk_bno)*/
+        			bno, title , writer, to_char(write_time, 'yyyy-mm-dd hh24:mi:ss') as writeTime, read_cnt from board) b
+    			where rownum<#{endRowNum}
+			)
+			where rnum>#{startRowNum}
+			]]>
+	</select>
 </mapper>

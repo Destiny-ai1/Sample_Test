@@ -42,9 +42,9 @@ public class BoardController {
 		return new ModelAndView("board/read").addObject("result",board);
 	}
 	
-	@GetMapping("/board/list")
-	public ModelAndView list() {
-		return new ModelAndView("board/list").addObject("result",boardservice.findall());
+	@GetMapping({"/","/board/list"})
+	public ModelAndView list(@RequestParam(defaultValue = "1") Integer pageno) {
+		return new ModelAndView("board/list").addObject("result",boardservice.findall(pageno));
 	}
 	
 	@ExceptionHandler(FailException.class)

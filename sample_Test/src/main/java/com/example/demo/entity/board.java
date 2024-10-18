@@ -26,4 +26,8 @@ public class board {
 		this.content = "삭제된글입니다";
 		return this;
 	}
+
+	public void increaseReadCnt() {
+		this.readCnt++;
+	}
 }

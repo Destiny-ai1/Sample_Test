@@ -2,7 +2,6 @@ package com.example.demo.dao;
 
 import java.util.*;
 
-import org.apache.ibatis.annotations.*;
 
 import com.example.demo.entity.*;
 

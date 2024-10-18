@@ -1,7 +1,7 @@
 package com.example.demo.dto;
 
 import java.time.*;
-
+import java.util.*;
 
 import com.example.demo.entity.*;
 
@@ -27,11 +27,24 @@ public class BoardDto {
 	
 	@Getter
 	@ToString
-	public static class read{
+	public static class BoardList{
 		private Long bno;
 		private String title;
 		private String writer;
 		private String writeTime;
 		private String readCnt;
+	}
+	
+	@Getter
+	@ToString
+	@AllArgsConstructor
+	public static class page{
+		private Integer prev;
+		private Integer start;
+		private Integer end;
+		private Integer next;
+		private Integer pageno;		
+		private List<BoardList> boards;
+		
 	}
 }

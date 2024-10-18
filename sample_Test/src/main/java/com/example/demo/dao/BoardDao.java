@@ -17,7 +17,8 @@ public interface BoardDao {
 	@Update("update board set read_cnt=read_cnt+1 where bno=#{bno} and rownum=1")
 	public void increaseReadCnt(Long bno);
 	
-	@Select("select bno, title , writer, to_char(write_time, 'yyyy-mm-dd hh24:mi:ss') as writeTime, read_cnt from board order by bno desc")
-	public List<BoardDto.read> findall();
+	public List<BoardDto.BoardList> findAll(Integer startRowNum, Integer endRowNum);
 	
+	@Select("select count(*) from board")
+	public int count();
 }
