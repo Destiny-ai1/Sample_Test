@@ -33,26 +33,26 @@ public class BoardService {
 		
 	}
 
-	public board read(Long bno, String loginId) {
-		board board=boardDao.findById(bno).orElseThrow(()->new FailException("글을 찾을 수 없습니다."));
-		
-		// 비로그인이거나 내가작성한 글이면 조회수 변경이 없음
-		if(loginId==null || board.getWriter().equals(loginId)) 
-			return board;
-		
-		//로그인을했고 남이 작성한 글인 경우 조회수 작업 증가
-		// 이미 읽은글이 아닌경우에만 증가
-			boolean 읽었는가= memberBoardDao.existsByBnoAndUsername(bno,loginId);
-			if(읽었는가==false) {
-				memberBoardDao.save(bno,loginId);
-				boardDao.increaseReadCnt(bno);
-				board.increaseReadCnt();
-		}
-		// 삭제된 글이라면 본문 내용을 삭제된 글입니다로 변경
-		if(board.isDeleted()==true)
-			return board.글삭제();
-		return board;
-	}
+//	public board read(Long bno, String loginId) {
+//		board board=boardDao.findById(bno).orElseThrow(()->new FailException("글을 찾을 수 없습니다."));
+//		
+//		// 비로그인이거나 내가작성한 글이면 조회수 변경이 없음
+//		if(loginId==null || board.getWriter().equals(loginId)) 
+//			return board;
+//		
+//		//로그인을했고 남이 작성한 글인 경우 조회수 작업 증가
+//		// 이미 읽은글이 아닌경우에만 증가
+//			boolean 읽었는가= memberBoardDao.existsByBnoAndUsername(bno,loginId);
+//			if(읽었는가==false) {
+//				memberBoardDao.save(bno,loginId);
+//				boardDao.increaseReadCnt(bno);
+//				board.increaseReadCnt();
+//		}
+//		// 삭제된 글이라면 본문 내용을 삭제된 글입니다로 변경
+//		if(board.isDeleted()==true)
+//			return board.글삭제();
+//		return board;
+//	}
 	
 	@Value("10")
 	private int Page_SIZE;

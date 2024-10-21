@@ -40,4 +40,10 @@ public class BoardTest {
 	public void findAllTest() {
 		boardDao.findAll(11, 20).forEach(b->System.out.println(b));
 	}
+	
+	@Test
+	public void findByidtest() {
+		BoardDto.Read dto = boardDao.findById(61L);
+		System.out.println(dto);
+	}
 }

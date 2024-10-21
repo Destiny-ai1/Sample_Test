@@ -45,6 +45,19 @@ public class BoardDto {
 		private Integer next;
 		private Integer pageno;		
 		private List<BoardList> boards;
+	}
+	
+	@Data
+	public static class Read{
+		private Long bno;
+		private String title;
+		private String content;
+		private String writer;
+		private String writeTime;
+		private Integer readCnt;
+		private Integer goodCnt;
+		private Integer badCnt;
 		
+		private List<CommentDto.Read> comments;
 	}
 }

@@ -26,4 +26,31 @@ Doctype 을 설정 ( 한글자라도 오타없이 정확하게 기술할것)  --
 			where rnum>#{startRowNum}
 			]]>
 	</select>
+	<!-- resultMap 은 
+	마이바티스가 sql 실행결과를 가지고 객체를 만들면 문제가 안된다 
+	그런데, 객체가 생성을 못하면 개발자 입장에서 resultMap으로 사용하라고 알려준다  -->
+	<resultMap id="findByIdMap" type="com.example.demo.dto.BoardDto$Read">
+		<id column="bno" property="bno" />
+		<result column="title" property="title"/>
+		<result column="content" property="content"/>
+		<result column="writer" property="writer"/>
+		<result column="writeTime" property="writeTime"/>
+		<result column="read_cnt" property="readCnt"/>
+		<result column="good_cnt" property="goodCnt"/>
+		<result column="bad_cnt" property="badCnt"/>
+		
+		<collection property="comments" javaType="java.util.List" ofType="com.example.demo.dto.CommentDto$Read">
+			<id column="ccno" property="cno" />
+			<result column="cwriter" property="writer"/>
+			<result column="ccontent" property="content"/>
+			<result column="cwriteTime" property="writeTime"/>
+		</collection>
+
+	</resultMap>
+	<select id="findById" resultMap="findByIdMap">
+		select b.bno, b.title, b.content, b.writer, to_char(b.write_time, 'yyyy-mm-dd hh24:mi:ss') as writeTime, 
+		b.read_cnt, b.good_cnt, b.bad_cnt,
+		c.cno as ccno , c.writer as cwriter, c.content as ccontent, to_char(c.write_time, 'yyyy-mm-dd hh24:mi:ss') as cwriteTime
+		from board b join comments c on b.bno=c.bno where b.bno=61
+	</select>
 </mapper>
