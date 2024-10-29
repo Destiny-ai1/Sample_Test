@@ -8,6 +8,12 @@
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
 <script src="/script/input.js"></script>
 <title>Insert title here</title>
+<style>
+	/* 댓글 작성 창 크기 변경 막기*/
+	textarea {
+		resize: none; 
+	}
+</style>
 </head>
 <body>
 	<div id="app">
@@ -32,19 +38,36 @@
                     <h3>내용:</h3>
                     <div th:utext="${result.content}"></div> 
                 </div>
-			
+                
+				<!-- 좋아요 나빠요 -->
 				<div class="mb-4">
                     <button class="btn btn-outline-primary" id="like-btn">좋아요 ♡ <span id="goodCnt" th:text="${result.goodCnt}">0</span></button>
                     <button class="btn btn-outline-danger" id="dislike-btn">나빠요 👎 <span id="badCnt" th:text="${result.badCnt}">0</span></button>
                 </div>
+                
+				<!-- 댓글작성 -->
+				<div sec:authorize="isAuthenticated()">
+				<textarea class="form-control" rows="5" placeholder="댓글을 달아주세요" id="comment"></textarea>
+				<button class="btn btn-outline-success" id="write-comment">댓글 작성</button>
+				</div>
 				
-				<div sec:authorize="isAuthenticated()"></div>
-				<textarea class="form-control" rows="5" placeholder="댓글을 달아주세요"></textarea>
-				<button class="btn btn-outline-success">댓글 작성</button>
+				<!-- 댓글삭제 -->
+				<div id="comments">
+	    			<div th:each="comment:${result.comments}">
+	    				<div class='upper' style="display:flex; justify-content: space-between;">
+	    					<div>
+	    						 <strong th:text='${comment.writer}'></strong>
+	    						 <button th:if="${comment.writer} == ${#authentication.name}" class="btn btn-light delete-comment" th:data-cno="${comment.cno}">삭제</button>
+	    					</div>
+	    					<div th:text='${comment.writeTime}'></div>
+	    				</div>
+	    				<div th:text='${comment.content}' class='lower'>
+	    				</div>
+	    				<hr>
+	    			</div>
+				</div>		
 				
-				<div class="d-flex justify-content-end mt-4" 
-							th:if="${result.writer == #authentication.name}">
-					
+				<div class="d-flex justify-content-end mt-4" th:if="${result.writer == #authentication.name}">
 					<a type="button" class="btn btn-info me-2" th:href="'/board/update?bno=' + ${result.bno}"> 변경하기</a>
 					<a type="button" class="btn btn-danger" th:href="'/board/delete?bno=' + ${result.bno}"> 삭제하기</a>
 				</div>
@@ -52,6 +75,67 @@
 			<aside th:replace="~{/fragment/aside.html}"></aside>
 		</main>
 		<footer th:replace="~{/fragment/footer.html}"> </footer>
-	</div>			
+	</div>
+	<script>
+	// 댓글 출력 리스트
+	function printComments(comments) {
+		const $comments = $('#comments');
+		const loginId = '[[${#authentication.name}]]';
+		$comments.empty();
+		console.log(comments);
+		for(const c of comments) {
+			const cno = c.cno;
+			const deleteButtonHtml = c.writer === loginId ? `<button class="btn btn-light delete-comment" data-cno="${cno}">삭제</button>` : '';
+			const html = `
+				<div >
+				<div class='upper'style="display:flex; justify-content: space-between;">
+					<div>
+						<strong>${c.writer}</strong>
+						${deleteButtonHtml}
+					</div>
+					<div>${c.writeTime}</div>
+				</div>
+				<div class='lower'>${c.content}</div>
+				<hr>
+			</div>				
+			`;
+			$comments.append($(html));
+		}
+	}
+	</script>
+	<script>
+	//댓글 작성
+	$('#write-comment').click(function() {
+			const bno = '[[${result.bno}]]';
+			const _csrf = '[[${_csrf.token}]]';
+			const content = $('#comment').val();
+			$.ajax({
+				url: '/api/comments',
+				method: 'post',
+				data: {bno, content, _csrf},
+				success(result) {
+					printComments(result);
+				}
+			});
+			$('#comment').val("");
+		})
+	</script>		
+	<script>
+	// 댓글 삭제
+		$('#comments').on('click', '.delete-comment', function() {
+			const cno = $(this).data('cno');
+			const bno = '[[${result.bno}]]';
+			const _csrf = '[[${_csrf.token}]]';
+			$.ajax({
+				url: '/api/comments',
+				method: 'delete',
+				data: {bno, cno, _csrf},
+				success(result) {
+					console.log(result);
+					printComments(result);
+				}
+			});
+		});
+	</script>	
 </body>
 </html>

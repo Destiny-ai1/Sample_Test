@@ -46,6 +46,8 @@
 					</tr>
 				</table>
 				<button id="update" class="btn btn-success">변경</button>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+				
+				<button type="button" id="delete" class="btn btn-danger">삭제</button>
 				</form>
 			</section>
 			<aside th:replace="~{/fragment/aside.html}"></aside>
@@ -54,6 +56,16 @@
 	</div>		
 	<script>
 		$('#profile').change(loadProfile);
+		
+		$('#delete').click(function() {
+			const token = '[[${_csrf.token}]]';
+			const form = `
+				<form action="/member/withdraw" method="post">
+					<input type="hidden" name="_csrf" value="${token}">
+				</form>
+			`;
+			$(form).appendTo($('body')).submit();
+		})
 	</script>
 </body>
 </html>

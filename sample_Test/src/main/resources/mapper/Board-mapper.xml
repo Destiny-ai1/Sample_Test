@@ -38,6 +38,7 @@ Doctype 을 설정 ( 한글자라도 오타없이 정확하게 기술할것)  --
 		<result column="read_cnt" property="readCnt"/>
 		<result column="good_cnt" property="goodCnt"/>
 		<result column="bad_cnt" property="badCnt"/>
+		<result column="is_deleted" property="isDeleted"/>
 		
 		<collection property="comments" javaType="java.util.List" ofType="com.example.demo.dto.CommentDto$Read">
 			<id column="ccno" property="cno" />
@@ -49,8 +50,8 @@ Doctype 을 설정 ( 한글자라도 오타없이 정확하게 기술할것)  --
 	</resultMap>
 	<select id="findById" resultMap="findByIdMap">
 		select b.bno, b.title, b.content, b.writer, to_char(b.write_time, 'yyyy-mm-dd hh24:mi:ss') as writeTime, 
-		b.read_cnt, b.good_cnt, b.bad_cnt,
+		b.read_cnt, b.good_cnt, b.bad_cnt,b.is_deleted,
 		c.cno as ccno , c.writer as cwriter, c.content as ccontent, to_char(c.write_time, 'yyyy-mm-dd hh24:mi:ss') as cwriteTime
-		from board b join comments c on b.bno=c.bno where b.bno=61
+		from board b left outer join comments c on b.bno=c.bno where b.bno=#{bno} order by c.cno desc
 	</select>
 </mapper>

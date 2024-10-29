@@ -42,8 +42,8 @@ public class BoardTest {
 	}
 	
 	@Test
-	public void findByidtest() {
-		BoardDto.Read dto = boardDao.findById(61L);
+	public void findByIdTest() {
+		BoardDto.Read dto= boardDao.findById(61L).get();
 		System.out.println(dto);
 	}
 }

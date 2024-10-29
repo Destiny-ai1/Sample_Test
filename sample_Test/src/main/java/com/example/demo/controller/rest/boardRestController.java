@@ -45,4 +45,5 @@ public class boardRestController {
 	public ResponseEntity<byte[]> viewprofile(String imagename){
 		return imageUtil.getImageResponseEntity(imagename);
 	}
+	
 }

@@ -22,12 +22,5 @@ public class board {
 	
 	private boolean isDeleted;
 		
-	public board 글삭제() {
-		this.content = "삭제된글입니다";
-		return this;
-	}
-
-	public void increaseReadCnt() {
-		this.readCnt++;
-	}
+	
 }

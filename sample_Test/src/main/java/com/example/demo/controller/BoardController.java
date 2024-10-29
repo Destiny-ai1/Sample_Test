@@ -35,12 +35,12 @@ public class BoardController {
 		return new ModelAndView("redirect:/board/read?bno="+bno);
 	}
 	
-////	@GetMapping("/board/read")
-////	public ModelAndView read(Long bno, Principal principal) {
-////		String loginId= principal==null? null:principal.getName();
-////		board board= boardservice.read(bno, loginId);
-//		return new ModelAndView("board/read").addObject("result",board);
-//	}
+	@GetMapping("/board/read")
+	public ModelAndView read(Long bno, Principal principal) {
+		String loginId= principal==null? null:principal.getName();
+		BoardDto.Read dto= boardservice.read(bno, loginId);
+		return new ModelAndView("board/read").addObject("result",dto);
+	}
 	
 	@GetMapping({"/","/board/list"})
 	public ModelAndView list(@RequestParam(defaultValue = "1") Integer pageno) {

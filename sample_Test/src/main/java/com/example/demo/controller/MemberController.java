@@ -171,4 +171,15 @@ public class MemberController {
 	public ModelAndView cveHandler() {
 		return new ModelAndView("error/error").addObject("message", "잘못된 작업입니다.");
 	}
+	
+	@PreAuthorize("isAuthenticated()")
+	@PostMapping("/member/withdraw")
+	public ModelAndView 탈퇴(HttpSession session, Principal principal) {
+		memberService.탈퇴(principal.getName());
+		
+		// 세션은 사용자 정보를 저장하는 서버측 공간
+		// 모든 사용자는 세션을 가진다 -> invalidate()하면 세션을 파괴하고 새로운 세션을 생성
+		session.invalidate();
+		return new ModelAndView("redirect:/");
+	}
 }	

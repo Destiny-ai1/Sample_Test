@@ -43,7 +43,7 @@ public class BoardDto {
 		private Integer start;
 		private Integer end;
 		private Integer next;
-		private Integer pageno;		
+		private Integer pageno;
 		private List<BoardList> boards;
 	}
 	
@@ -57,7 +57,17 @@ public class BoardDto {
 		private Integer readCnt;
 		private Integer goodCnt;
 		private Integer badCnt;
+		private Boolean isDeleted;
 		
 		private List<CommentDto.Read> comments;
+		
+		public BoardDto.Read 글삭제() {
+			this.content = "삭제된글입니다";
+			return this;
+		}
+
+		public void 조회수증가() {
+			this.readCnt++;
+		}
 	}
 }

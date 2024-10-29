@@ -11,7 +11,7 @@ import com.example.demo.entity.*;
 public interface BoardDao {
 	public int save(board board);
 
-	public BoardDto.Read findById(Long bno);
+	public Optional<BoardDto.Read> findById(Long bno);
 	
 	@Update("update board set read_cnt=read_cnt+1 where bno=#{bno} and rownum=1")
 	public void increaseReadCnt(Long bno);
