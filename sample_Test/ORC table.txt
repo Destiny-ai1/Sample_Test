@@ -1,0 +1,36 @@
+create table member(
+    username varchar2(10 char),
+    password varchar2(60 char),
+    email varchar2(30 char),
+    joinday date,
+    birthday date,
+    profile varchar2(20 char),
+    login_fail_Count number(1),
+    enabled number(1),
+    role varchar2(10 char),
+    CONSTRAINT member_pk_username primary key(username)
+);
+
+
+public boolean join(MemberDto.Create dto) {
+		MultipartFile profile =dto.getProfile();
+		String profileName = defaultImage;
+		
+		if(profile!=null && profile.isEmpty()==false) {
+			//프사를 저장하면 사용자의 이름과 같다
+			String 저장할이름 = dto.getUsername()+"."+FilenameUtils.getExtension(profile.getOriginalFilename());
+			// 폴더와 파일명을 가지고 저장할 파일 객체를 생성해라 
+			File file = new File(imageSaveFolder,저장할이름);
+			
+			try {
+				profile.transferTo(file);
+				profileName = 저장할이름;
+			} catch (IllegalStateException | IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		String encodedpassword = encoder.encode(dto.getPassword());
+		Member member = dto.entity(profileName, encodedpassword);
+		return memberDao.save(member)==1;
+	}

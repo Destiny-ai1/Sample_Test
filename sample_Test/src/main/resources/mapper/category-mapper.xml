@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>           
+
+<!-- 이문서는 mybatis sql 매퍼 파일이라고 
+Doctype 을 설정 ( 한글자라도 오타없이 정확하게 기술할것)  -->
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.demo.dao.CategoryDao">
+	<!-- 대분류 -->
+	<resultMap type="com.example.demo.dto.CategoryDto" id="findall">
+		<id property="cno" column="gcno"></id>
+		<result property="cname" column="gcname" />
+		<collection property ="children" javaType="java.util.ArrayList" resultMap="mapForparent"></collection>
+	</resultMap>
+	
+	<!-- 중분류 -->
+	<resultMap type="com.example.demo.dto.CategoryDto" id="mapForparent">
+		<id property="cno" column="pcno"></id>
+		<result property="cname" column="pcname"/>
+		<collection property ="children" javaType="java.util.ArrayList" resultMap="mapForchild"></collection>
+	</resultMap>
+	
+	<!-- 소분류 -->
+	<resultMap type="com.example.demo.dto.CategoryDto" id="mapForchild">
+		<id property="cno" column="ccno"/>
+    <result property="cname" column="ccname"/>
+	</resultMap>
+	
+	<select id="findall" resultMap="findall">
+		select g.cno as gcno, g.cname as gcname, p.cno as pcno ,p.cname as pcname, c.cno as ccno,c.cname as ccname 
+			 from category g join category p on p.parent=g.cno
+			 join category c on c.parent= p.cno where g.parent is null
+	</select>
+</mapper>

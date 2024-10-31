@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>404 화면 대처방안</title>
+<style>
+	#app{
+		height: 100vh;
+		display: flex;
+		justify-content: center;
+		align-items:center;
+		color: red;
+	}
+</style>
+</head>
+<body>
+	<div id="app">
+		<p>이유: <span id="message" th:text="${message}"></span></p>
+		<button onclick="history.back();"> 정상적인 page가 아닙니다 확인해주세요</button>
+	</div>
+</body>
+</html>

@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>           
+
+<!-- 이문서는 mybatis sql 매퍼 파일이라고 
+Doctype 을 설정 ( 한글자라도 오타없이 정확하게 기술할것)  -->
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.example.demo.dao.MemberDaoBatisWithXml">
+	<!-- 
+	resultType 에 사용한 int,string은 실제로 java.lang.(Integer),(String) 으로 클래스의 단축어
+	 -->
+	<select id="countByUsername" resultType="int">
+		select count(username) from member where username=#{username} and rownum=1
+	</select>
+	<select id="findByUsername" resultType="com.example.demo.entity.Member">
+		select * from member where username=#{username} and rownum=1
+	</select>
+	<select id="findByUsernameByemail" resultType="string">
+		select username from member where email=#{email} and rownum=1
+	</select>
+	
+	<insert id="save">
+		insert into member(username,password,email,joinday,birthday,profile,login_count_fail,enable,role)
+		values(#{username},#{password},#{email},#{joinday},#{birthday},#{profile},#{login_count_fail},#{enable},#{role})
+	</insert>
+	
+	<delete id ="deleteById">
+		delete from member where username=#{username} and rownum=1
+	</delete>
+	
+	<update id="update">
+		update member
+		<set>
+			<if test="email!=null">email=#{email},</if>
+			<if test="password!=null">password=#{password},</if>
+			<if test="loginFailCount!=null">login_fail_count=#{loginFailCount},</if>
+			<if test="enabled!=null">enabled= #{enabled},</if>
+		</set>
+		where username=#{username} and rownum=1
+	</update>
+</mapper>

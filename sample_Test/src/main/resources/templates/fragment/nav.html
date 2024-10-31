@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html  lang="ko" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+</head>
+<body>
+	<nav class="navbar navbar-expand-sm navbar-dark bg-dark">
+		<div class="container-fluid">
+			<a class="navbar-brand" href="/">Logo</a>
+			<div class="collapse navbar-collapse" id="mynavbar">
+				<ul class="navbar-nav me-auto" sec:authorize="isAnonymous()">
+					<li class="nav-item"><a class="nav-link" href="">카테코리</a></li>
+					<li class="nav-item"><a class="nav-link" href="/member/join">회원가입</a></li>
+					<li class="nav-item"><a class="nav-link" href="/member/login">로그인</a></li>
+					<li class="nav-item"><a class="nav-link" href="/member/find">아이디 찾기</a></li>
+					<li class="nav-item"><a class="nav-link" href="/">게시판</a></li>
+					<li class="nav-item"><a class="nav-link" href="/">출석</a></li>
+					<!-- 로그인하지않았을경우 출석이아니라 로그인 하라고 문구뛰우고 로그인 페이지로 보내기 -->
+					<li class="nav-item"><a class="nav-link" href="/">고객센터</a></li>
+					
+				</ul>
+				<ul class="navbar-nav me-auto" sec:authorize="isAuthenticated()">
+					<li class="nav-item"><a class="nav-link" href="">카테코리</a></li>
+					<li class="nav-item"><a class="nav-link" href="/board/write">글쓰기</a></li>
+					<li class="nav-item"><a class="nav-link" href="#" id="logout">로그아웃</a></li>
+					<li class="nav-item"><a class="nav-link" href="/member/readme">내정보</a></li>
+					<li class="nav-item"><a class="nav-link" href="/board/list">게시판</a></li>
+					<li class="nav-item"><a class="nav-link" href="/">출석</a></li>
+					<li class="nav-item"><a class="nav-link" href="/member/delete">탈퇴</a></li>
+					<li class="nav-item"><a class="nav-link" href="/">고객센터</a></li>				
+				</ul>
+			</div>
+		</div>
+	</nav>
+	<script>
+		$('#logout').click(function(){
+			const token= '[[${_csrf.token}]]';
+			const html=`
+			  <form action="/member/logout" method="post">
+				<input type='hidden' name='_csrf' value='${token}'>
+			  </form>
+			  `;
+			$(html).appendTo($('body')).submit();
+		});
+	</script>
+</body>
+</html>
